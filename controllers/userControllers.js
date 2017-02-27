@@ -47,10 +47,10 @@ module.exports = {
         res.send(user)
       })
     },
-    signUp : function(req, res, next) {
+    signUp : (req, res, next)=> {
       models.User.create({
         username: req.body.username,
-        password: passwordHash.generate(req.body.password),
+        password: hash.generate(req.body.password),
         email: req.body.email,
         admin: false
       }).then(function(user){
@@ -58,7 +58,7 @@ module.exports = {
       })
     },
 
-    signIn : function(req, res, next) {
+    signIn : (req, res, next)=> {
       models.User.findOne({
         where:{
           username: req.body.username
@@ -67,7 +67,7 @@ module.exports = {
         if(!user){
           res.send('user not found')
         }
-        if(hash.verify(req.body.password, user.password) == true){
+        if(hash.verify(req.body.password, user.password)){
           var token = jwt.sign({username: user.username, isAdmin: user.admin}, process.env.SECRET, { expiresIn: '1d' });
           res.json({
             success: true,
@@ -75,11 +75,24 @@ module.exports = {
             token: token
           });
         } else {
-          res.send("wrong password")
+          res.send("Wrong Password")
         }
 
-      }),
-      verify : (req,res)=>{
-
+      })},
+      verifyAdmin : (req,res,next)=>{
+        var decode = jwt.verify(req.headers.token, process.env.SECRET)
+        if(decode.isAdmin){
+          next()
+        }else{
+          res.send("you are an authorized person")
+        }
+      },
+      verifyUser : (req,res,next)=>{
+        var decode = jwt.verify(req.headers.token, process.env.SECRET)
+        if(!decode){
+          res.send("you are an authorized person")
+        }else{
+          next()
+        }
       }
     }

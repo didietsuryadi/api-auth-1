@@ -1,14 +1,14 @@
 ####List of basic routes:
 
-| Route          | HTTP   | Description  |
-| ----------     |:------:|-------------:|
-| /api/signin    | POST    | Sign in user |
-| /api/signup    | POST    | Register user |
-| /api/users     | GET     | Get all the users |
-| /api/user/:id  | GET     | Get a single user |
-| /api/user      | POST    | Create a user |
-| /api/user/:id  | DELETE  | Get all the users |
-| /api/user/:id  | PUT     | Get all the users |
+| Route          | HTTP   | Description  | Role |
+| ----------     |:------:|-------------:|------:|
+| /api/signin    | POST    | Sign in user |user|
+| /api/signup    | POST    | Register user |user|
+| /api/users     | GET     | Get all the users |admin|
+| /api/user/:id  | GET     | Get a single user |user|
+| /api/user      | POST    | Create a user |admin|
+| /api/user/:id  | DELETE  | Get all the users |admin|
+| /api/user/:id  | PUT     | Get all the users |user|
 
 ## Usage
 #### With only npm:
