@@ -25,17 +25,21 @@ module.exports = {
     })
   },
   updateUser : (req,res)=>{
-    models.User.findById(req.params.id).then(function (data) {
-      data.update({
-        username: req.body.username,
-        password: hash.generate(req.body.password),
-        email: req.body.email,
-        isadmin: req.body.admin,
-        updateAt: new Date()
-      })
-    }).then(function(user){
-      res.send(`data has been updated for ${user.username}`)
+    models.User.update({
+      username: req.body.username,
+      password: hash.generate(req.body.password),
+      email: req.body.email,
+      admin: req.body.admin,
+      updateAt: new Date()
+    }, {
+      where: { id: req.params.id },
+      returning: true,
+      plain: true
     })
+    .then(function (result) {
+      console.log(result);
+      res.send(result[1]);
+    });
   },
   createUser : (req,res)=>{
     models.User.create(
@@ -78,21 +82,5 @@ module.exports = {
           res.send("Wrong Password")
         }
 
-      })},
-      verifyAdmin : (req,res,next)=>{
-        var decode = jwt.verify(req.headers.token, process.env.SECRET)
-        if(decode.isAdmin){
-          next()
-        }else{
-          res.send("you are an authorized person")
-        }
-      },
-      verifyUser : (req,res,next)=>{
-        var decode = jwt.verify(req.headers.token, process.env.SECRET)
-        if(!decode){
-          res.send("you are an authorized person")
-        }else{
-          next()
-        }
-      }
+      })}
     }
